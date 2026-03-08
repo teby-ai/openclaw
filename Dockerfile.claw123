@@ -46,8 +46,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
     libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev \
     libffi-dev liblzma-dev \
-    # Bittensor dependencies
-    libzmq3-dev protobuf-compiler pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Docker CLI (static binary) ──────────────────────────────────────
@@ -70,10 +68,6 @@ RUN git clone --depth 1 https://github.com/pyenv/pyenv.git "$PYENV_ROOT" \
 RUN ARCH=$(dpkg --print-architecture) \
     && curl -fsSL "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${ARCH}" \
     -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
-
-# ── Bittensor ───────────────────────────────────────────────────────────
-# PEP 668 (Debian Bookworm) blocks system-wide pip; safe to override in a container.
-RUN pip3 install --no-cache-dir --break-system-packages bittensor
 
 # ── Puppeteer ────────────────────────────────────────────────────────
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
