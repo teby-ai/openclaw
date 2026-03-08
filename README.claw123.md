@@ -39,6 +39,36 @@ docker build -f Dockerfile.claw123 -t claw123-openclaw:$(date +%Y.%m.%d) -t claw
 3. **预装开发工具**
    - apt packages: git, curl, wget, vim, nano, python3, postgresql-client, redis-tools, htop, tmux, jq, ripgrep, fzf, docker CLI, docker-compose, pyenv, yq, chromium 等（详见下方完整列表）
 
+4. **预装 Python 包**
+   - bittensor（包含完整系统依赖：libzmq3-dev, protobuf-compiler, pkg-config）
+
+## Bittensor 支持
+
+本镜像已预装 bittensor 及其所有系统依赖，可直接在 OpenClaw agent 中使用 bittensor 功能。
+
+### 为什么需要预装
+
+bittensor 包含 C++/Rust 编写的原生组件，这些组件在编译时链接了各种系统库（如 libzmq、protobuf 等）。在最小化的沙箱环境中这些库缺失会导致运行时崩溃。
+
+### 验证安装
+
+```bash
+# 进入运行中的容器
+docker exec -it openclaw-gateway /bin/bash
+
+# 验证 bittensor 安装
+python3 -c "import bittensor; print(bittensor.__version__)"
+
+# 运行 bittensor CLI
+btcli --help
+```
+
+### 相关文件变更
+
+- `Dockerfile.claw123:49-50` - 添加 bittensor 系统依赖 (libzmq3-dev, protobuf-compiler, pkg-config)
+- `Dockerfile.claw123:74-76` - 安装 bittensor Python 包
+- `README.claw123.md` - 添加 bittensor 支持文档
+
 ## 文件说明
 
 | 文件 | 说明 |
@@ -110,6 +140,7 @@ cp ~/.gitconfig ~/.openclaw/gitconfig
 ### Python
 - python3, python3-pip, python3-venv, python3-dev
 - pyenv (Python 版本管理器)
+- bittensor (去中心化神经网络，预装系统依赖: libzmq3-dev, protobuf-compiler, pkg-config)
 
 ### 数据库客户端
 - postgresql-client, redis-tools, sqlite3
@@ -125,6 +156,7 @@ cp ~/.gitconfig ~/.openclaw/gitconfig
 
 ### 构建工具
 - make, gcc, g++, build-essential
+- libzmq3-dev, protobuf-compiler, pkg-config (bittensor 依赖)
 
 ### 压缩传输
 - zip, unzip, rsync, openssh-client
