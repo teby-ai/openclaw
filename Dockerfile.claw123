@@ -72,8 +72,8 @@ RUN ARCH=$(dpkg --print-architecture) \
     -o /usr/local/bin/yq && chmod +x /usr/local/bin/yq
 
 # ── Bittensor ───────────────────────────────────────────────────────────
-# Install bittensor with pre-built system dependencies
-RUN pip3 install --no-cache-dir bittensor
+# PEP 668 (Debian Bookworm) blocks system-wide pip; safe to override in a container.
+RUN pip3 install --no-cache-dir --break-system-packages bittensor
 
 # ── Puppeteer ────────────────────────────────────────────────────────
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
