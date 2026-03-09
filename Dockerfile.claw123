@@ -48,6 +48,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Use an isolated Python virtual environment by default to avoid
+# Debian's externally-managed-environment restrictions for pip installs.
+ENV VIRTUAL_ENV=/opt/python-venv
+ENV PATH="$VIRTUAL_ENV/bin:${PATH}"
+RUN python3 -m venv "$VIRTUAL_ENV"
+
 # ── Docker CLI (static binary) ──────────────────────────────────────
 RUN ARCH=$(uname -m) \
     && curl -fsSL "https://download.docker.com/linux/static/stable/${ARCH}/docker-27.5.1.tgz" \
